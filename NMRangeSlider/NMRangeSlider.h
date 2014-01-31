@@ -11,44 +11,26 @@
 
 @interface NMRangeSlider : UIControl
 
-// default 0.0
-@property(assign, nonatomic) float minimumValue;
 
-// default 1.0
-@property(assign, nonatomic) float maximumValue;
-
-// default 0.0. This is the minimum distance between between the upper and lower values
-@property(assign, nonatomic) float minimumRange;
-
-// default 0.0 (disabled)
-@property(assign, nonatomic) float stepValue;
+@property(assign, nonatomic) float minimumValue; // default 0.0
+@property(assign, nonatomic) float maximumValue; // default 1.0
+@property(assign, nonatomic) float minimumRange; // default 0.0. This is the minimum distance between between the upper and lower values
+@property(assign, nonatomic) float stepValue; // default 0.0 (disabled)
 
 // If NO the slider will move freely with the tounch. When the touch ends, the value will snap to the nearest step value
 // If YES the slider will stay in its current position until it reaches a new step value.
 // default NO
 @property(assign, nonatomic) BOOL stepValueContinuously;
 
-// defafult YES, indicating whether changes in the sliders value generate continuous update events.
-@property(assign, nonatomic) BOOL continuous;
+@property(assign, nonatomic) BOOL continuous; // defafult YES, indicating whether changes in the sliders value generate continuous update events.
 
-// default 0.0. this value will be pinned to min/max
-@property(assign, nonatomic) float lowerValue;
 
-// default 1.0. this value will be pinned to min/max
-@property(assign, nonatomic) float upperValue;
-
-// center location for the lower handle control
-@property(readonly, nonatomic) CGPoint lowerCenter;
-
-// center location for the upper handle control
-@property(readonly, nonatomic) CGPoint upperCenter;
-
-// maximum value for left thumb
-@property(assign, nonatomic) float lowerMaximumValue;
-
-// minimum value for right thumb
-@property(assign, nonatomic) float upperMinimumValue;
-
+@property(assign, nonatomic) float lowerValue; // default 0.0. this value will be pinned to min/max
+@property(assign, nonatomic) float upperValue;// default 1.0. this value will be pinned to min/max
+@property(readonly, nonatomic) CGPoint lowerCenter; // center location for the lower handle control
+@property(readonly, nonatomic) CGPoint upperCenter; // center location for the upper handle control
+@property(assign, nonatomic) float lowerMaximumValue; // maximum value for left thumb
+@property(assign, nonatomic) float upperMinimumValue; // minimum value for right thumb
 
 @property (assign, nonatomic) BOOL lowerHandleHidden;
 @property (assign, nonatomic) BOOL upperHandleHidden;
@@ -73,14 +55,9 @@
 
 @property(retain, nonatomic) UIImage* trackBackgroundImage;
 
-
-
-
 //Setting the lower/upper values with an animation :-)
 - (void)setLowerValue:(float)lowerValue animated:(BOOL) animated;
-
 - (void)setUpperValue:(float)upperValue animated:(BOOL) animated;
-
 - (void) setLowerValue:(float) lowerValue upperValue:(float) upperValue animated:(BOOL)animated;
 
 @end

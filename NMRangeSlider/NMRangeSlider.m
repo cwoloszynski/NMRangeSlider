@@ -116,7 +116,7 @@ NSUInteger DeviceSystemMajorVersion() {
 {
     float value = lowerValue;
     
-    if(_stepValueInternal>0)
+    if (_stepValueInternal>0)
     {
         value = roundf(value / _stepValueInternal) * _stepValueInternal;
     }
@@ -139,7 +139,7 @@ NSUInteger DeviceSystemMajorVersion() {
 {
     float value = upperValue;
     
-    if(_stepValueInternal>0)
+    if (_stepValueInternal>0)
     {
         value = roundf(value / _stepValueInternal) * _stepValueInternal;
     }
@@ -180,7 +180,7 @@ NSUInteger DeviceSystemMajorVersion() {
         
     };
     
-    if(animated)
+    if (animated)
     {
         [UIView animateWithDuration:0.25  delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState
                          animations:^{
@@ -322,7 +322,7 @@ NSUInteger DeviceSystemMajorVersion() {
         else
         {
             UIImage* image = [UIImage imageNamed:@"slider-default7-handle"];
-            _lowerHandleImageNormal = image;
+            _lowerHandleImageHighlighted = image;
         }
     }
     
@@ -360,7 +360,7 @@ NSUInteger DeviceSystemMajorVersion() {
         else
         {
             UIImage* image = [UIImage imageNamed:@"slider-default7-handle"];
-            _upperHandleImageNormal = image;
+            _upperHandleImageHighlighted = image;
         }
     }
     
@@ -501,11 +501,12 @@ NSUInteger DeviceSystemMajorVersion() {
     // Lower Handle Handle
     self.lowerHandle = [[UIImageView alloc] initWithImage:self.lowerHandleImageNormal highlightedImage:self.lowerHandleImageHighlighted];
     self.lowerHandle.frame = [self thumbRectForValue:_lowerValue image:self.lowerHandleImageNormal];
-    
+    self.lowerHandle.highlighted = NO;
     //------------------------------
     // Upper Handle Handle
     self.upperHandle = [[UIImageView alloc] initWithImage:self.upperHandleImageNormal highlightedImage:self.upperHandleImageHighlighted];
     self.upperHandle.frame = [self thumbRectForValue:_upperValue image:self.upperHandleImageNormal];
+    self.upperHandle.highlighted = NO;
     
     [self addSubview:self.trackBackground];
     [self addSubview:self.track];
@@ -665,7 +666,7 @@ NSUInteger DeviceSystemMajorVersion() {
     _lowerHandle.highlighted = NO;
     _upperHandle.highlighted = NO;
     
-    if(_stepValue>0)
+    if (_stepValue>0)
     {
         _stepValueInternal=_stepValue;
         

@@ -55,6 +55,13 @@
 
 @property(retain, nonatomic) UIImage* trackBackgroundImage;
 
+// default 5.0. Used to change the touch area for the handles
+@property (assign, nonatomic) BOOL lowerHandleHorizontalTouchPadding;
+@property (assign, nonatomic) BOOL lowerHandleVerticalTouchPadding;
+@property (assign, nonatomic) BOOL upperHandleHorizontalTouchPadding;
+@property (assign, nonatomic) BOOL upperHandleVerticalTouchPadding;
+
+
 //Setting the lower/upper values with an animation :-)
 - (void)setLowerValue:(float)lowerValue animated:(BOOL) animated;
 - (void)setUpperValue:(float)upperValue animated:(BOOL) animated;

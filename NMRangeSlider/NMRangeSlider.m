@@ -86,15 +86,21 @@ NSUInteger DeviceSystemMajorVersion() {
     _stepValue = 0.0;
     _stepValueInternal = 0.0;
     
+    _lowerHandleHorizontalTouchPadding = 5.0;
+    _lowerHandleVerticalTouchPadding = 5.0;
+    _upperHandleHorizontalTouchPadding = 5.0;
+    _upperHandleVerticalTouchPadding = 5.0;
+
     _continuous = YES;
     
     _lowerValue = 0.0;
-    _upperValue = 1.0;
+    _upperValue = FLT_MAX; // Fix error with setting the lower before the upper.
     
     _lowerMaximumValue = NAN;
     _upperMinimumValue = NAN;
     _upperHandleHidden = NO;
     _lowerHandleHidden = NO;
+
 }
 
 // ------------------------------------------------------------------------------------------------------
@@ -500,11 +506,13 @@ NSUInteger DeviceSystemMajorVersion() {
     //------------------------------
     // Lower Handle Handle
     self.lowerHandle = [[UIImageView alloc] initWithImage:self.lowerHandleImageNormal highlightedImage:self.lowerHandleImageHighlighted];
+    self.lowerHandle.contentMode = UIViewContentModeTopLeft;
     self.lowerHandle.frame = [self thumbRectForValue:_lowerValue image:self.lowerHandleImageNormal];
     self.lowerHandle.highlighted = NO;
     //------------------------------
     // Upper Handle Handle
     self.upperHandle = [[UIImageView alloc] initWithImage:self.upperHandleImageNormal highlightedImage:self.upperHandleImageHighlighted];
+    self.upperHandle.contentMode = UIViewContentModeTopLeft;
     self.upperHandle.frame = [self thumbRectForValue:_upperValue image:self.upperHandleImageNormal];
     self.upperHandle.highlighted = NO;
     
@@ -561,13 +569,11 @@ NSUInteger DeviceSystemMajorVersion() {
 #pragma mark -
 #pragma mark - Touch handling
 
-// The handle size can be a little small, so i make it a little bigger
-// TODO: Do it the correct way. I think wwdc 2012 had a video on it...
 - (CGRect) touchRectForHandle:(UIImageView*) handleImageView
 {
-    float xPadding = 5;
-    float yPadding = 5; //(self.bounds.size.height-touchRect.size.height)/2.0f
-
+    float xPadding = (handleImageView == _lowerHandle ? _lowerHandleHorizontalTouchPadding : _upperHandleHorizontalTouchPadding);
+    float yPadding = (handleImageView == _lowerHandle ? _lowerHandleVerticalTouchPadding : _upperHandleVerticalTouchPadding);
+    
     // expands rect by xPadding in both x-directions, and by yPadding in both y-directions
     CGRect touchRect = CGRectInset(handleImageView.frame, -xPadding, -yPadding);;
     return touchRect;

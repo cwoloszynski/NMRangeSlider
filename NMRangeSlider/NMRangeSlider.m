@@ -79,6 +79,10 @@ NSUInteger DeviceSystemMajorVersion() {
 
 - (void) configureView
 {
+    //
+    _leftHandleInset = 0.0;
+    _rightHandleInset = 0.0;
+    
     //Setup the default values
     _minimumValue = 0.0;
     _maximumValue = 1.0;
@@ -382,7 +386,7 @@ NSUInteger DeviceSystemMajorVersion() {
 //The return value is automatically adjust to fit inside the valid range
 -(float) lowerValueForCenterX:(float)x
 {
-    float _padding = _lowerHandle.frame.size.width/2.0f;
+    float _padding = _lowerHandle.frame.size.width/2.0f + _leftHandleInset;
     float value = _minimumValue + (x-_padding) / (self.frame.size.width-(_padding*2)) * (_maximumValue - _minimumValue);
     
     value = MAX(value, _minimumValue);
@@ -395,7 +399,7 @@ NSUInteger DeviceSystemMajorVersion() {
 //The return value is automatically adjust to fit inside the valid range
 -(float) upperValueForCenterX:(float)x
 {
-    float _padding = _upperHandle.frame.size.width/2.0;
+    float _padding = _upperHandle.frame.size.width/2.0+_leftHandleInset;
     
     float value = _minimumValue + (x-_padding) / (self.frame.size.width-(_padding*2)) * (_maximumValue - _minimumValue);
     
@@ -418,15 +422,12 @@ NSUInteger DeviceSystemMajorVersion() {
     {
         retValue.size.height=self.bounds.size.height;
     }
-    
-    float lowerHandleWidth = _lowerHandleHidden ? 2.0f : _lowerHandle.frame.size.width;
-    float upperHandleWidth = _upperHandleHidden ? 2.0f : _upperHandle.frame.size.width;
-    
-    float xLowerValue = ((self.bounds.size.width - lowerHandleWidth) * (_lowerValue - _minimumValue) / (_maximumValue - _minimumValue))+(lowerHandleWidth/2.0f);
-    float xUpperValue = ((self.bounds.size.width - upperHandleWidth) * (_upperValue - _minimumValue) / (_maximumValue - _minimumValue))+(upperHandleWidth/2.0f);
-    
-    retValue.origin = CGPointMake(xLowerValue, (self.bounds.size.height/2.0f) - (retValue.size.height/2.0f));
-    retValue.size.width = xUpperValue-xLowerValue;
+        
+    float xValueLeft = ((self.activeTrackWidth)*((_lowerValue-_minimumValue) / (_maximumValue - _minimumValue)));
+    float xValueRight = ((self.activeTrackWidth)*((_upperValue-_minimumValue) / (_maximumValue - _minimumValue)));
+
+    retValue.origin = CGPointMake(_leftHandleInset+xValueLeft+_lowerHandle.frame.size.width/2.0, (self.bounds.size.height/2.0f) - (retValue.size.height/2.0f));
+    retValue.size.width = xValueRight-xValueLeft;
 
     return retValue;
 }
@@ -448,7 +449,7 @@ NSUInteger DeviceSystemMajorVersion() {
 {
     CGRect trackBackgroundRect;
     
-    trackBackgroundRect.size = CGSizeMake(_trackBackgroundImage.size.width-4, _trackBackgroundImage.size.height);
+    trackBackgroundRect.size = CGSizeMake(_trackBackgroundImage.size.width, _trackBackgroundImage.size.height);
     
     if(_trackBackgroundImage.capInsets.top || _trackBackgroundImage.capInsets.bottom)
     {
@@ -457,13 +458,29 @@ NSUInteger DeviceSystemMajorVersion() {
     
     if(_trackBackgroundImage.capInsets.left || _trackBackgroundImage.capInsets.right)
     {
-        trackBackgroundRect.size.width=self.bounds.size.width-4;
+        trackBackgroundRect.size.width=self.bounds.size.width;
     }
     
-    trackBackgroundRect.origin = CGPointMake(2, (self.bounds.size.height/2.0f) - (trackBackgroundRect.size.height/2.0f));
+    trackBackgroundRect.origin = CGPointMake(0, (self.bounds.size.height/2.0f) - (trackBackgroundRect.size.height/2.0f));
     
     return trackBackgroundRect;
 }
+
+//
+// Active width of the area that covers the range from minValue to MaxValue.
+// Remove the insets for the handles (outside of the range at all).
+//
+// The width of the handles also needs to be considered.  It starts at the mid-point of each handle, so we remove 1/2 of
+// each handle width also.
+//
+- (float) activeTrackWidth
+{
+    float lowerHandleWidth = _lowerHandleHidden ? 2.0f : _lowerHandle.frame.size.width;
+    float upperHandleWidth = _upperHandleHidden ? 2.0f : _upperHandle.frame.size.width;
+
+    return _trackBackground.frame.size.width-_leftHandleInset-_rightHandleInset-lowerHandleWidth/2.0-upperHandleWidth/2.0;
+}
+
 
 //returms the rect of the tumb image for a given track rect and value
 - (CGRect)thumbRectForValue:(float)value image:(UIImage*) thumbImage
@@ -478,9 +495,19 @@ NSUInteger DeviceSystemMajorVersion() {
         thumbRect.size.height=self.bounds.size.height;
     }
     
-    float xValue = ((self.bounds.size.width-thumbRect.size.width)*((value - _minimumValue) / (_maximumValue - _minimumValue)));
+    // Only compute the location on the screen of the value
+    value -= _minimumValue;
+    
+    // float xValue = ((self.bounds.size.width-thumbRect.size.width)*((value - _minimumValue) / (_maximumValue - _minimumValue)));
+    NSLog(@"trackWidth = %f", self.activeTrackWidth);
+    float xValue = ((self.activeTrackWidth)*((value) / (_maximumValue - _minimumValue)));
+    
+    xValue +=_minimumValue+_leftHandleInset;
+    
     thumbRect.origin = CGPointMake(xValue, (self.bounds.size.height/2.0f) - (thumbRect.size.height/2.0f));
     
+    
+    NSLog(@"Thumb x: %f for value %f", xValue, value);
     return CGRectIntegral(thumbRect);
 
 }
@@ -543,6 +570,15 @@ NSUInteger DeviceSystemMajorVersion() {
 
     self.trackBackground.frame = [self trackBackgroundRect];
     self.track.frame = [self trackRect];
+    
+    NSAssert(self.frame.size.height >= self.track.frame.size.height,
+             @"track height is larger than control height");
+    
+    NSAssert(self.frame.size.width >= self.trackBackground.frame.size.width,
+             @"trackBackground width is larger than control width");
+    NSAssert(self.frame.size.height >= self.trackBackground.frame.size.height,
+             @"trackBackground height is larger than control height");
+    
     self.track.image = [self trackImageForCurrentValues];
 
     // Layout the lower handle

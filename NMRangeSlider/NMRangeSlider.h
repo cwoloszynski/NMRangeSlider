@@ -2,6 +2,14 @@
 //  RangeSlider.h
 //  RangeSlider
 //
+//
+// The layout of this on the screen, if you are looking to align the image and thumbs precisely,
+// follows the following logic.
+// The trackImage should be as wide as the maxValue-minValue * desired pts/interval
+// plus 1/2 of each of the thumb widths (since the design assumes that the thumb center is the point of alignment)
+// plus the insets from each side (to allow the ends of the graph to be wider than half of the thumb images).
+//
+//
 //  Created by Murray Hughes on 04/08/2012
 //  Copyright 2011 Null Monkey Pty Ltd. All rights reserved.
 //
@@ -32,6 +40,8 @@
 @property(assign, nonatomic) float lowerMaximumValue; // maximum value for left thumb
 @property(assign, nonatomic) float upperMinimumValue; // minimum value for right thumb
 
+@property (assign, nonatomic) float leftHandleInset;
+@property (assign, nonatomic) float rightHandleInset;
 @property (assign, nonatomic) BOOL lowerHandleHidden;
 @property (assign, nonatomic) BOOL upperHandleHidden;
 

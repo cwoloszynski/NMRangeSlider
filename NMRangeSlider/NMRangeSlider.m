@@ -499,7 +499,7 @@ NSUInteger DeviceSystemMajorVersion() {
     value -= _minimumValue;
     
     // float xValue = ((self.bounds.size.width-thumbRect.size.width)*((value - _minimumValue) / (_maximumValue - _minimumValue)));
-    NSLog(@"trackWidth = %f", self.activeTrackWidth);
+//    NSLog(@"trackWidth = %f", self.activeTrackWidth);
     float xValue = ((self.activeTrackWidth)*((value) / (_maximumValue - _minimumValue)));
     
     xValue +=_minimumValue+_leftHandleInset;
@@ -507,7 +507,7 @@ NSUInteger DeviceSystemMajorVersion() {
     thumbRect.origin = CGPointMake(xValue, (self.bounds.size.height/2.0f) - (thumbRect.size.height/2.0f));
     
     
-    NSLog(@"Thumb x: %f for value %f", xValue, value);
+//    NSLog(@"Thumb x: %f for value %f", xValue, value);
     return CGRectIntegral(thumbRect);
 
 }

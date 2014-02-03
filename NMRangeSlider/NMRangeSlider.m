@@ -192,7 +192,7 @@ NSUInteger DeviceSystemMajorVersion() {
     
     if (animated)
     {
-        [UIView animateWithDuration:0.25  delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState
+        [UIView animateWithDuration:0.25  delay:0.0 options:UIViewAnimationOptionBeginFromCurrentState | UIViewAnimationOptionAllowUserInteraction
                          animations:^{
                              
                              setValuesBlock();

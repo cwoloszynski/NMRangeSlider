@@ -140,7 +140,9 @@ NSUInteger DeviceSystemMajorVersion() {
     
     value = MIN(value, _upperValue - _minimumRange);
     
+    [self willChangeValueForKey:@"lowerCenter"];
     _lowerValue = value;
+    [self didChangeValueForKey:@"lowerCenter"];
     
     [self setNeedsLayout];
 }
@@ -163,7 +165,9 @@ NSUInteger DeviceSystemMajorVersion() {
     
     value = MAX(value, _lowerValue+_minimumRange);
     
+    [self willChangeValueForKey:@"upperCenter"];
     _upperValue = value;
+    [self didChangeValueForKey:@"upperCenter"];
 
     [self setNeedsLayout];
 }

@@ -71,6 +71,8 @@
 @property (assign, nonatomic) BOOL upperHandleHorizontalTouchPadding;
 @property (assign, nonatomic) BOOL upperHandleVerticalTouchPadding;
 
+@property (readonly, nonatomic) BOOL lowerHandleHighlighted; // Highlighted if being dragged
+@property (readonly, nonatomic) BOOL upperHandleHighlighted; // Highlighted if being dragged
 
 //Setting the lower/upper values with an animation :-)
 - (void) setLowerValue:(float) lowerValue animated:(BOOL) animated;

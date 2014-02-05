@@ -381,6 +381,16 @@ NSUInteger DeviceSystemMajorVersion() {
     return _upperHandleImageHighlighted;
 }
 
+- (BOOL) lowerHandleHighlighted
+{
+    return _lowerHandle.highlighted;
+}
+
+- (BOOL) upperHandleHighlighted
+{
+    return _upperHandle.highlighted;
+}
+
 // ------------------------------------------------------------------------------------------------------
 
 #pragma mark -

@@ -492,6 +492,7 @@ NSUInteger DeviceSystemMajorVersion() {
     float lowerHandleWidth = _lowerHandleHidden ? 2.0f : _lowerHandle.frame.size.width;
     float upperHandleWidth = _upperHandleHidden ? 2.0f : _upperHandle.frame.size.width;
 
+//    NSLog(@"background Width: %f leftInset: %f rightInset: %f lowerHandleWidth: %f upperHandleWidth: %f", _trackBackground.frame.size.width, _leftHandleInset, _rightHandleInset, lowerHandleWidth, upperHandleWidth);
     return _trackBackground.frame.size.width-_leftHandleInset-_rightHandleInset-lowerHandleWidth/2.0-upperHandleWidth/2.0;
 }
 
@@ -513,7 +514,7 @@ NSUInteger DeviceSystemMajorVersion() {
     value -= _minimumValue;
     
     // float xValue = ((self.bounds.size.width-thumbRect.size.width)*((value - _minimumValue) / (_maximumValue - _minimumValue)));
-//    NSLog(@"trackWidth = %f", self.activeTrackWidth);
+//    NSLog(@"trackWidth = %f, range of values = %f, width/step %f", self.activeTrackWidth, (_maximumValue-_minimumValue), self.activeTrackWidth/_stepValue);
     float xValue = ((self.activeTrackWidth)*((value) / (_maximumValue - _minimumValue)));
     
     xValue +=_minimumValue+_leftHandleInset;
@@ -522,7 +523,7 @@ NSUInteger DeviceSystemMajorVersion() {
     
     
 //    NSLog(@"Thumb x: %f for value %f", xValue, value);
-    return CGRectIntegral(thumbRect);
+    return thumbRect;
 
 }
 
@@ -639,13 +640,17 @@ NSUInteger DeviceSystemMajorVersion() {
     
     if(CGRectContainsPoint([self touchRectForHandle:_lowerHandle], touchPoint))
     {
+        [self willChangeValueForKey:@"lowerHandleHighlighted"];
         _lowerHandle.highlighted = YES;
+        [self didChangeValueForKey:@"lowerHandleHighlighted"];
         _lowerTouchOffset = touchPoint.x - _lowerHandle.center.x;
     }
     
     if(CGRectContainsPoint([self touchRectForHandle:_upperHandle], touchPoint))
     {
+        [self willChangeValueForKey:@"upperHandleHighlighted"];
         _upperHandle.highlighted = YES;
+        [self didChangeValueForKey:@"upperHandleHighlighted"];
         _upperTouchOffset = touchPoint.x - _upperHandle.center.x;
     }
     
@@ -673,14 +678,18 @@ NSUInteger DeviceSystemMajorVersion() {
         //otherwise the touch event is ignored.
         if(!_upperHandle.highlighted || newValue<_lowerValue)
         {
+            [self willChangeValueForKey:@"upperHandleHighlighted"];
             _upperHandle.highlighted=NO;
+            [self didChangeValueForKey:@"upperHandleHighlighted"];
             [self bringSubviewToFront:_lowerHandle];
             
             [self setLowerValue:newValue animated:_stepValueContinuously ? YES : NO];
         }
         else
         {
+            [self willChangeValueForKey:@"lowerHandleHighlighted"];
             _lowerHandle.highlighted=NO;
+            [self didChangeValueForKey:@"lowerHandleHighlighted"];
         }
     }
     
@@ -692,13 +701,17 @@ NSUInteger DeviceSystemMajorVersion() {
         //otherwise the touch event is ignored.
         if(!_lowerHandle.highlighted || newValue>_upperValue)
         {
+            [self willChangeValueForKey:@"lowerHandleHighlighted"];
             _lowerHandle.highlighted=NO;
+            [self didChangeValueForKey:@"lowerHandleHighlighted"];
             [self bringSubviewToFront:_upperHandle];
             [self setUpperValue:newValue animated:_stepValueContinuously ? YES : NO];
         }
         else
         {
+            [self willChangeValueForKey:@"upperHandleHighlighted"];
             _upperHandle.highlighted=NO;
+            [self didChangeValueForKey:@"upperHandleHighlighted"];
         }
     }
      
@@ -719,8 +732,13 @@ NSUInteger DeviceSystemMajorVersion() {
 
 -(void)endTrackingWithTouch:(UITouch *)touch withEvent:(UIEvent *)event
 {
+    [self willChangeValueForKey:@"lowerHandleHighlighted"];
     _lowerHandle.highlighted = NO;
+    [self didChangeValueForKey:@"lowerHandleHighlighted"];
+    
+    [self willChangeValueForKey:@"upperHandleHighlighted"];
     _upperHandle.highlighted = NO;
+    [self didChangeValueForKey:@"upperHandleHighlighted"];
     
     if (_stepValue>0)
     {
@@ -733,4 +751,19 @@ NSUInteger DeviceSystemMajorVersion() {
     [self sendActionsForControlEvents:UIControlEventValueChanged];
 }
 
+#pragma - mark Support sliding the handles programmatically
+- (void) slideLowerHandle:(float)pointsToMove
+{
+    float lowerValue = _lowerValue + (pointsToMove)*(self.activeTrackWidth) / (_maximumValue - _minimumValue);
+    lowerValue += _minimumValue+_leftHandleInset;
+    [self setLowerValue:lowerValue animated:NO];
+}
+
+- (void) slideUpperHandle:(float)pointsToMove
+{
+    float upperValue = _upperValue + (pointsToMove)*(self.activeTrackWidth) / (_maximumValue - _minimumValue);
+    upperValue += _minimumValue+_leftHandleInset;
+    [self setUpperValue:upperValue animated:NO];
+    
+}
 @end

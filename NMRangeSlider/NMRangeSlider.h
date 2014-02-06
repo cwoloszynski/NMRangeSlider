@@ -78,5 +78,6 @@
 - (void) setLowerValue:(float) lowerValue animated:(BOOL) animated;
 - (void) setUpperValue:(float) upperValue animated:(BOOL) animated;
 - (void) setLowerValue:(float) lowerValue upperValue:(float) upperValue animated:(BOOL)animated;
-
+- (void) slideLowerHandle:(float) pointsToMove;
+- (void) slideUpperHandle:(float) pointsToMove;
 @end

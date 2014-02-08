@@ -755,14 +755,18 @@ NSUInteger DeviceSystemMajorVersion() {
 - (void) slideLowerHandle:(float)pointsToMove
 {
     float lowerValue = _lowerValue + (pointsToMove)*(self.activeTrackWidth) / (_maximumValue - _minimumValue);
-    lowerValue += _minimumValue+_leftHandleInset;
+//    lowerValue += _minimumValue+_leftHandleInset;
+    
+    NSLog(@"Changing lowerValue %f to %f for moving %f points", _lowerValue, lowerValue, pointsToMove);
     [self setLowerValue:lowerValue animated:NO];
 }
 
 - (void) slideUpperHandle:(float)pointsToMove
 {
     float upperValue = _upperValue + (pointsToMove)*(self.activeTrackWidth) / (_maximumValue - _minimumValue);
-    upperValue += _minimumValue+_leftHandleInset;
+    // upperValue += _minimumValue+_leftHandleInset;
+
+    NSLog(@"Changing upperValue %f to %f for moving %f points", _upperValue, upperValue, pointsToMove);
     [self setUpperValue:upperValue animated:NO];
     
 }
